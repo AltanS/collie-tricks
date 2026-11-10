@@ -2,6 +2,8 @@
 
 Four tricks for [Collie](https://github.com/AltanS/collie).
 
+Tricks need a Collie build that has the `collie trick` command. Run `collie trick` to check.
+
 A trick is a small program on your machine. Collie runs it every few minutes and reads one JSON document from its output.
 The document says what to show on your phone, and Collie draws it with its own parts, so a trick never ships its own screen.
 A trick may also ask you a question, called a Decision, and your answer goes back to the trick.
@@ -34,7 +36,7 @@ switches it off again.
 
 - A trick is off until you switch it on.
 - The switch approves the code as it is now. It stores a hash of the code.
-- A changed trick stops. If a file of the code changes, the trick stays off until you switch it on again.
+- A change to a trick's code never runs without your yes.
 - A trick never sends a message or types into a session for you. It may show you a Decision, and it acts only after your tap.
 - The one write in this repository is `pr-inbox` posting a comment after your tap, and only with `live = true`. It ships with `live = false`.
 - `release-gates` never tags and never pushes. A yes is a record.
