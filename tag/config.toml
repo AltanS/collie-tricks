@@ -1,0 +1,29 @@
+# The Tag trick's settings. Not part of the code hash: edit freely. Paths may be absolute or ~/...
+# CI is read from this repository with gh, read only. Set it to your own: owner/name.
+repo = "example/repo"
+# The release this gate is for. Empty: no release open, and the trick draws one muted row.
+# Example: version = "2.4.0" or "2.4.0-rc.1"
+version = ""
+# The branch whose CI and CHANGELOG.md the gates read.
+branch = "main"
+# The workflow file whose newest run on the branch is gate 1.
+workflow = "ci.yml"
+# true: the Windows rehearsal is a gate. false (a patch): it is skipped.
+minor = true
+# The checkout whose CHANGELOG.md (on the branch) and tags the gates read, read only.
+checkout = "~/src/example-repo"
+# Gate 2 and 3: a results folder of timestamped runs, each with a table.md (a markdown table of harness, scenario,
+# verdict, taps, note), and a folder of leg-core-*.txt logs. These are the formats of Collie's own release process.
+# Empty: the gate reads "no report" and the Decision is never asked.
+leg_results = ""
+leg_logs = ""
+# Written by the release session (SKILL.md): the Windows rehearsal output (its last line must be "rollback: ok"),
+# the hold file (any text: a peer release is in flight), the counsel note (a note that names the version).
+rehearsal = "~/release/win-rehearse.txt"
+hold = "~/release/hold"
+counsel = "~/release/counsel.md"
+# The session named this in the facts gets the Decision's about and replyTo, and so the yes.
+release_session = "release"
+# Where the gate count (5/7) shows while a release is open: any of "dashboard" (a tile), "tabbar" (an item in the
+# bottom bar), "status" (a chip in the status line) and "belt" (a mark at the end of the Belt). [] shows only the Session.
+show = ["tabbar"]

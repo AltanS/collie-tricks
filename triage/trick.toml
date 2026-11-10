@@ -1,0 +1,11 @@
+# Triage: public replies on your own login, one Decision per draft that passes the house check.
+id = "triage"
+name = "Triage"
+run = "program.ts"
+every = "5m"
+icon = "chat"
+# Every place `show` in config.toml may name, and the session. Which ones draw is config.toml's call.
+places = ["dashboard", "tabbar", "status", "belt", "session"]
+# gh reads its login from the system keyring, which it reaches over the session bus.
+env = ["DBUS_SESSION_BUS_ADDRESS"]
+contract = 1

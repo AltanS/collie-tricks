@@ -1,0 +1,8 @@
+up: server http://127.0.0.1:18700  checkout /home/dev/app-2.4.0
+Running 34 tests using 1 worker
+  ✓  1 [phone] › suite › alpha › 1 login form (12.0s)
+  ✘  2 [phone] › suite › alpha › 2 settings page (31.0s)
+    Error: the card never showed; the key was sk-or-v1-0000000000fakefakefake0000000000
+  ✘  3 [phone] › suite › alpha › 3 export dialog (30.0s)
+  2 failed
+  32 passed (13.0m)

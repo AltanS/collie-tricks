@@ -1,0 +1,1 @@
+{"jobs":[{"name":"test (ubuntu)","conclusion":"failure","steps":[{"name":"bun test","conclusion":"failure"}]},{"name":"lint","conclusion":"success","steps":[]}]}

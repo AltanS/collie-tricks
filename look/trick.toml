@@ -1,0 +1,9 @@
+# Look: the yes by name for UI changes. One Decision per visible change in a worktree's LOOK.md, with its shot.
+id = "look"
+name = "Look"
+run = "program.ts"
+every = "5m"
+icon = "eye"
+# Every place `show` in config.toml may name, and the session. Which ones draw is config.toml's call.
+places = ["dashboard", "tabbar", "status", "belt", "session"]
+contract = 1

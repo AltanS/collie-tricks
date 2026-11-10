@@ -1,0 +1,5 @@
+up: server http://127.0.0.1:18700  checkout /home/dev/app-2.4.0
+Running 34 tests using 1 worker
+  34 passed (13.0m)
+Running 7 tests using 1 worker
+  7 passed (3.3m)

@@ -1,0 +1,12 @@
+# The Lanes trick's settings. Not part of the code hash: edit freely.
+# The checkouts whose head the Session lists; the first is the one the lane builds from.
+# Example: checkouts = ["~/src/collie"]
+checkouts = []
+# The standby door of the running Collie to compare with: plain HTTP, GET only, no login, whose version header ends
+# in +<sha> of its build. Empty: the lane is not read and only the heads of the checkouts show.
+# Example: health_url = "http://127.0.0.1:<port>/standby/health"
+health_url = ""
+# The name of the lane row in the Session.
+label = "Lane"
+# Where the commit shows: "dashboard" (a tile, the default) and "status" (a chip in the status line).
+show = ["dashboard"]

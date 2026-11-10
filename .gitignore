@@ -1,0 +1,7 @@
+# Runtime output of a trick that is on: Look copies its shots to media/.
+*/media/
+# Editor and system files
+.DS_Store
+*.swp
+# Backups
+*.bak-*

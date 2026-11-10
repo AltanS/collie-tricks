@@ -1,0 +1,93 @@
+// test.sh's checker (a template: test.sh writes the schema's path over SCHEMA). It reads one document on
+// stdin, parses it with the trick schema of the Collie checkout (COLLIE_REPO), and checks what the expectation JSON
+// (argv[2]) names. argv[3] is the manifest's places, comma separated. Prints the first miss, exits 1.
+//   parts: the `at` of each part, in order    status / belt: the chip text or mark label, null for none
+//   dashboard / tabbar: "<label>" or "<label> <badge>", null for none
+//   decisions: the keys, in order   has / lacks: strings the document must hold / must not hold
+//   recommends / about / replyTo: key -> value or null   media: key -> count   links: key -> first href
+//   texts: key -> text mode ("optional" when absent)   captions: key -> the captions joined by ","
+//   view: key -> strings its view must hold   noView: keys with no view   body: key -> strings its body holds
+//   titleEnds / summaryStarts / summaryEnds: key -> text   confirm: key -> intent of the option with a confirm
+import { parseTrickDocumentText } from "SCHEMA";
+
+const want = JSON.parse(process.argv[2] ?? "{}");
+const places = (process.argv[3] ?? "dashboard,tabbar,status,belt,session").split(",");
+const text = await Bun.stdin.text();
+const parsed = parseTrickDocumentText(text, { declared: places as never });
+const fail = (why: string): never => {
+  console.error("FAIL " + why + "\n" + text.slice(0, 800));
+  process.exit(1);
+};
+if (parsed.documentRefused || parsed.refusals.length > 0) fail("refusals: " + JSON.stringify(parsed.refusals));
+const doc = JSON.parse(text);
+const part = (at: string) => doc.parts.find((p: { at: string }) => p.at === at);
+if (want.parts !== undefined) {
+  const ats = doc.parts.map((p: { at: string }) => p.at);
+  if (JSON.stringify(ats) !== JSON.stringify(want.parts)) fail("parts " + JSON.stringify(ats) + ", want " + JSON.stringify(want.parts));
+}
+const seen: Record<string, string | null> = {
+  status: part("status")?.chip?.text ?? null,
+  belt: part("belt")?.mark?.label ?? null,
+  dashboard: part("dashboard") ? [part("dashboard").item.label, part("dashboard").item.badge].filter((x) => x !== undefined).join(" ") : null,
+  tabbar: part("tabbar") ? [part("tabbar").item.label, part("tabbar").item.badge].filter((x) => x !== undefined).join(" ") : null,
+};
+for (const place of Object.keys(seen)) if (want[place] !== undefined && seen[place] !== want[place]) fail(place + " " + JSON.stringify(seen[place]) + ", want " + JSON.stringify(want[place]));
+const decisions = doc.decisions ?? [];
+const keys = decisions.map((d: { key: string }) => d.key);
+if (want.decisions !== undefined && JSON.stringify(keys) !== JSON.stringify(want.decisions)) fail("decisions " + JSON.stringify(keys) + ", want " + JSON.stringify(want.decisions));
+if (want.decisionsKey === "absent" && doc.decisions !== undefined) fail("the document lists decisions; want the key left out");
+// Every string of the document, decoded, so an expectation may hold quotes.
+const strings: string[] = [];
+const walk = (v: unknown, out = strings): void => {
+  if (typeof v === "string") out.push(v);
+  else if (Array.isArray(v)) v.forEach((x) => walk(x, out));
+  else if (v !== null && typeof v === "object") Object.entries(v).forEach(([k, x]) => (out.push(k), walk(x, out)));
+};
+walk(doc);
+const flat = strings.join("\n");
+for (const s of want.has ?? []) if (!text.includes(s) && !flat.includes(s)) fail("the document lacks " + JSON.stringify(s));
+for (const s of want.lacks ?? []) if (text.includes(s) || flat.includes(s)) fail("the document holds " + JSON.stringify(s));
+const byKey = (key: string) => decisions.find((x: { key: string }) => x.key === key) ?? fail("no decision " + key);
+for (const [key, intent] of Object.entries(want.recommends ?? {})) {
+  const got = byKey(key).recommends?.intent ?? null;
+  if (got !== intent) fail("recommends of " + key + " is " + got + ", want " + intent);
+}
+for (const field of ["about", "replyTo"] as const) {
+  for (const [key, to] of Object.entries(want[field] ?? {})) {
+    const got = byKey(key)[field] ?? null;
+    if (got !== to) fail(field + " of " + key + " is " + got + ", want " + to);
+  }
+}
+for (const [key, n] of Object.entries(want.media ?? {})) {
+  const got = (byKey(key).media ?? []).length;
+  if (got !== n) fail("media of " + key + " is " + got + ", want " + n);
+}
+for (const [key, caps] of Object.entries(want.captions ?? {})) {
+  const got = (byKey(key).media ?? []).map((m: { caption?: string }) => m.caption ?? "").join(",");
+  if (got !== caps) fail("captions of " + key + " are " + got + ", want " + caps);
+}
+for (const [key, href] of Object.entries(want.links ?? {})) {
+  const got = byKey(key).links?.[0]?.href ?? null;
+  if (got !== href) fail("link of " + key + " is " + got + ", want " + href);
+}
+for (const [key, mode] of Object.entries(want.texts ?? {})) {
+  const got = byKey(key).text ?? "optional";
+  if (got !== mode) fail("text of " + key + " is " + got + ", want " + mode);
+}
+for (const [key, list] of Object.entries(want.view ?? {})) {
+  const out: string[] = [];
+  walk(byKey(key).view ?? [], out);
+  for (const s of list as string[]) if (!out.some((x) => x.includes(s))) fail("the view of " + key + " lacks " + JSON.stringify(s));
+}
+for (const key of want.noView ?? []) if (byKey(key).view !== undefined) fail(key + " has a view");
+for (const [key, list] of Object.entries(want.body ?? {})) for (const s of list as string[]) if (!(byKey(key).body ?? "").includes(s)) fail("the body of " + key + " lacks " + JSON.stringify(s));
+for (const [key, intent] of Object.entries(want.confirm ?? {})) {
+  const got = (byKey(key).options ?? []).filter((o: { confirm?: string }) => o.confirm !== undefined).map((o: { intent: string }) => o.intent).join(",");
+  if (got !== intent) fail("the options of " + key + " with a confirm are " + JSON.stringify(got) + ", want " + intent);
+}
+const ends = (field: string, list: Record<string, string> | undefined, test: (got: string, x: string) => boolean) => {
+  for (const [key, x] of Object.entries(list ?? {})) if (!test(String(byKey(key)[field] ?? ""), x)) fail(field + " of " + key + " is " + JSON.stringify(byKey(key)[field]) + ", want " + JSON.stringify(x));
+};
+ends("title", want.titleEnds, (g, x) => g.endsWith(x));
+ends("summary", want.summaryStarts, (g, x) => g.startsWith(x));
+ends("summary", want.summaryEnds, (g, x) => g.endsWith(x));
