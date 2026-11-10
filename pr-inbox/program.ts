@@ -1,10 +1,10 @@
-// The Triage trick: public replies on the operator's own login, one Decision each. It reads the open PRs and
+// The PR Inbox trick: public replies on the operator's own login, one Decision each. It reads the open PRs and
 // issues of `repo` with gh (read only, cached 60 s) and offers each draft in `drafts` that passes the house
 // check. A draft that fails the check is a card in the Session with its failing line, never a Decision.
 //
 // The act. With live = false a Post tap only writes a would record with the tap's rid: no gh write runs.
 // With live = true a Post runs gh pr comment (or gh issue comment) once per rid. Merge has no live path: it
-// always writes a record. Edit keeps the person's words in the state folder (they reach the triage agent
+// always writes a record. Edit keeps the person's words in the state folder (they reach the drafting agent
 // through replyTo); Hold, Not yet and a dismiss close the key for 24 h.
 // Asked again: a post or a would-merge ends the key for that draft; a new draft text is new content.
 // The records, the cache, the tool lookup and `show` are Collie's helper, trick.ts (v3); lib.ts is the house check.
@@ -200,7 +200,7 @@ run(async (t) => {
       if (words === "") notes.push("An edit with no words changes nothing. Say what to change.");
       else if (edits.once(rid, { rid, number, hash: draft.hash, at: iso(now), seen, text: words })) {
         t.state.set("edit-" + number, { rid, hash: draft.hash, at: iso(now), seen, text: words });
-        notes.push("Your words for " + what(number) + " " + (replyTo === null ? "are kept here: no session is named " + replySession + "." : "went to " + replySession + ", the triage agent."));
+        notes.push("Your words for " + what(number) + " " + (replyTo === null ? "are kept here: no session is named " + replySession + "." : "went to " + replySession + ", the drafting agent."));
       }
     } else if (m[1] === "reply" && intent === "hold") {
       t.closedUntil(key, now + DAY_MS);
@@ -262,7 +262,7 @@ run(async (t) => {
     const opened = age(now - Date.parse(item.createdAt));
     if (edit !== null && edit.hash === d.hash) {
       const where = replyTo === null ? "Kept in this trick's records" : "Sent to " + replySession;
-      cards.push(v.card([v.para(clip("The reply to " + what(d.number) + " waits for the triage agent's new version.", 200)), v.para(clip(edit.text ?? "(no words)", 400), { role: "quote" }), v.line(clip(where + ", " + minute(Date.parse(edit.at)) + ".", 240), { role: "note" })], { tone: "accent" }));
+      cards.push(v.card([v.para(clip("The reply to " + what(d.number) + " waits for the drafting agent's new version.", 200)), v.para(clip(edit.text ?? "(no words)", 400), { role: "quote" }), v.line(clip(where + ", " + minute(Date.parse(edit.at)) + ".", 240), { role: "note" })], { tone: "accent" }));
     } else if (post?.state === "would") done.push({ text: "Reply to " + what(d.number), end: "would post", detail: "Dry run: nothing was posted, live is off. Recorded " + minute(Date.parse(post.at)) + "." });
     else if (post?.state === "posted") done.push({ text: "Reply to " + what(d.number), end: "posted", detail: "Posted " + minute(Date.parse(post.at)) + ".", ...(post.url ? { href: post.url } : {}) });
     else if (post?.state === "started") lines.push("The post to " + what(d.number) + " did not finish. Look at the thread before you post again.");
@@ -285,7 +285,7 @@ run(async (t) => {
         body: clipBlock(d.text, 4000),
         options: [
           { intent: "post", label: "Post the reply", detail: "Posts the draft as your comment on GitHub.", confirm: "Tap again: post" },
-          { intent: "edit", label: "Ask for an edit", detail: "Say what to change; the triage agent writes a new version." },
+          { intent: "edit", label: "Ask for an edit", detail: "Say what to change; the drafting agent writes a new version." },
           { intent: "hold", label: "Hold for 24 h", detail: "Asks again after 24 h." },
         ],
         ...advise(item),
@@ -326,7 +326,7 @@ run(async (t) => {
   const offeredCount = t.decisions.filter((d) => d.key.startsWith("reply-")).length;
 
   // ── The places and the Session ──
-  t.put(show, { label: "Triage", icon: "chat", badge: offeredCount, word: offeredCount > 0 ? "triage " + offeredCount : null, tone: "accent" });
+  t.put(show, { label: "PRs", icon: "chat", badge: offeredCount, word: offeredCount > 0 ? "prs " + offeredCount : null, tone: "accent" });
   const hasDraft = new Set(drafts.filter((d) => !answered.has(d.number)).map((d) => d.number));
   const row = (i: Item): Node => {
     const end = answered.has(i.number) ? "answered" : i.kind === "pr" ? (i.draft ? "draft" : i.ci) + ", " + age(now - Date.parse(i.createdAt)) : age(now - Date.parse(i.createdAt));

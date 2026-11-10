@@ -1,4 +1,4 @@
-# Lanes, which commit a running Collie serves
+# Running Builds, which commit a running Collie serves
 
 The smallest useful trick: `program.ts` (about 40 lines) and Collie's helper `trick.ts` (v3), unmodified. It shows which
 commit a running Collie (a "lane") serves, beside the head of each checkout in `config.toml`. A lane is one running
@@ -11,7 +11,7 @@ or `health_url`.
   "no answer". With no `health_url` the lane is not read at all.
 - `config.toml`: `checkouts` (the first is the one the lane builds from), `health_url`, `label` (the name of the lane
   row), `show`.
-- On the phone: a Dashboard tile "Lanes" with the served commit as its badge (the first checkout's head when
+- On the phone: a Dashboard tile "Builds" with the served commit as its badge (the first checkout's head when
   the door gives no answer), in the warn tone when the lane serves another commit than that head. The
   Session: one row for the lane (when `health_url` is set), one row per checkout (path, short sha, subject).
   `show = ["dashboard", "status"]` adds a status chip with the sha; any other word is ignored with one warn row (`t.show`).

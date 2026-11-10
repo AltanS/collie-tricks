@@ -1,6 +1,6 @@
-# The Look trick's settings. Not part of the code hash: edit freely. Paths may be absolute or ~/..., globs allowed.
+# The UI Approvals trick's settings. Not part of the code hash: edit freely. Paths may be absolute or ~/..., globs allowed.
 # Every matching folder that holds a LOOK.md is a branch root; its branch comes from git.
-# Empty: Look finds nothing and the Session says so. Example: roots = ["~/work/*"]
+# Empty: UI Approvals finds nothing and the Session says so. Example: roots = ["~/work/*"]
 roots = []
 # A running copy of your app. A change whose route is a path (such as /settings/sync) gets a link to
 # <lane><route> on its Decision. Empty: no link. Example: lane = "http://localhost:5173"

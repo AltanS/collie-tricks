@@ -1,8 +1,0 @@
-# Lanes: which commit a running Collie serves, beside the head of each checkout. Read only, no Decisions.
-id = "lanes"
-name = "Lanes"
-run = "program.ts"
-every = "5m"
-icon = "branch"
-places = ["dashboard", "status", "session"]
-contract = 1

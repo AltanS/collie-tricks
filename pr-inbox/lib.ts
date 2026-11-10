@@ -1,4 +1,4 @@
-// The house check: the rules a public reply passes before Triage offers it. Triage's own; everything shared
+// The house check: the rules a public reply passes before PR Inbox offers it. PR Inbox's own; everything shared
 // (the mask, the records, the cache, the time) is Collie's helper, trick.ts.
 
 import { firstSentence, mask } from "./trick.ts";

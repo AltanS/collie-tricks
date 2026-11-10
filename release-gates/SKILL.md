@@ -1,11 +1,11 @@
-# Tag: the release session's half
+# Release Gates: the release session's half
 
-The Tag trick reads seven gates for the `version` in its `config.toml` and asks the operator one Decision,
+The Release Gates trick reads seven gates for the `version` in its `config.toml` and asks the operator one Decision,
 "Tag and push v<version>?", when all seven are green. The trick never tags. You do, after the yes.
 
 Keep these files, so the gates can read them:
 
-- Counsel note: after a second-opinion review of the release (counsel), write the file named by `counsel` in Tag's `config.toml`. It must name the version
+- Counsel note: after a second-opinion review of the release (counsel), write the file named by `counsel` in Release Gates' `config.toml`. It must name the version
   (`counsel v2.4.0-rc.1: no blocker`) and be newer than the newest tag.
 - Hold file: while a peer release is in flight, write the file named by `hold` with one line of
   reason. Delete it when the peer release is done. No file: gate 6 is green.
@@ -21,5 +21,5 @@ The answer arrives in your session as the operator's own message, in this form:
     Read the decision with: collie hill status dc_...
 
 Run `collie hill status <id>` to read the title and confirm the version. On `tag`, tag and push the release
-head, then clear `version` in Tag's config. On `not-yet`, wait: Tag asks again after 24 h while the gates
+head, then clear `version` in Release Gates' config. On `not-yet`, wait: Release Gates asks again after 24 h while the gates
 stay green. The Decision takes no words, so no line of text comes with it.

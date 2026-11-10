@@ -1,4 +1,4 @@
-// The Lanes trick: which commit a running Collie (a "lane") serves, beside the head of each checkout. Read only.
+// The Running Builds trick: which commit a running Collie (a "lane") serves, beside the head of each checkout. Read only.
 // The lane is read from its standby door (`health_url` in config.toml): plain HTTP, GET only, no login. Its version
 // header ends "+<sha>". With no `health_url` the lane is not read and only the checkout heads show.
 import { run, v } from "./trick.ts";
@@ -29,7 +29,7 @@ run(async (t) => {
   const sha = served || head || "none";
   const warn = stale ? ("warn" as const) : undefined;
 
-  t.put(show, { label: "Lanes", icon: "branch", badge: sha, word: sha.slice(0, 12), tone: warn, itemTone: warn });
+  t.put(show, { label: "Builds", icon: "branch", badge: sha, word: sha.slice(0, 12), tone: warn, itemTone: warn });
   const laneRow = v.row(label, { end: served || lane?.state || "no answer", icon: "machine", ...(stale ? { tone: "warn" as const } : {}) }, [
     v.para(lane === null ? "The standby door gave no answer in 2 s." : stale ? `Serves ${served}, but ${heads[0]?.name} is at ${head}: rebuild the lane.` : `Version ${lane.version || "unknown"}, ${lane.state}.`),
   ]);

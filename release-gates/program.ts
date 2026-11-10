@@ -1,4 +1,4 @@
-// The Tag trick: the release gate. Seven gates, each read on this machine. When all seven are green it asks
+// The Release Gates trick: the release gate. Seven gates, each read on this machine. When all seven are green it asks
 // one Decision, "Tag v<version>?". The trick never tags: a yes is a dated record in its state folder, and the
 // person's answer reaches the release session through replyTo. That session tags and pushes.
 //   1 CI on the branch   gh run list (read only, cached 60 s); a red run adds its failed jobs
@@ -246,7 +246,7 @@ run(async (t) => {
   // ── The places and the Session: the first red gate on top, with its log tail ──
   const firstRed = gates.find((g) => g.state === "waiting");
   const tone: Tone = allGreen ? "ok" : firstRed !== undefined ? "danger" : "muted";
-  t.put(show, { label: "Tag", icon: "tag", badge: green + "/7", word: "tag " + green + "/7", tone });
+  t.put(show, { label: "Gates", icon: "tag", badge: green + "/7", word: "gates " + green + "/7", tone });
   const chips = (withCurrent: boolean): Node => v.bar(gates.map((g, i) => v.chip(String(i + 1), { state: g.state, ...(g.state === "waiting" ? { tone: "danger" as const } : {}), ...(withCurrent && g === firstRed ? { current: true } : {}) })), { label: "Gates" });
   const view: Node[] = [v.number(green + "/7", { label: "gates green for v" + version, tone }), ...notes.map((n) => v.line(clip(n, 240), { role: "status" }))];
   if (firstRed !== undefined) {

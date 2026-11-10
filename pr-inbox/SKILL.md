@@ -1,9 +1,9 @@
-# Triage: write a reply draft
+# PR Inbox: write a reply draft
 
-Triage offers your draft to the operator as a Decision, "Post the reply on PR <n> (<its title>)?". A Post tap publishes it
+PR Inbox offers your draft to the operator as a Decision, "Post the reply on PR <n> (<its title>)?". A Post tap publishes it
 under the operator's own login, so the draft must already be the final words.
 
-1. Write the reply as `<number>.md` (the PR or issue number) in the `drafts` folder named in Triage's
+1. Write the reply as `<number>.md` (the PR or issue number) in the `drafts` folder named in PR Inbox's
    `config.toml`. Keep nothing else there but verdicts.
 2. One paragraph, first person, plain words. Open with the verdict; a plain thank-you may share the first
    sentence ("Thanks @handle, this lands in the next release."). Address people by `@handle`.
@@ -16,7 +16,7 @@ under the operator's own login, so the draft must already be the final words.
    A green PR with that verdict gets a second Decision. Merge has no live path: a tap only writes a record.
 5. A thread whose newest comment is the operator's own drops out. Delete the draft then.
 
-Name your session exactly as `reply_session` in Triage's `config.toml`, so the answer comes to you:
+Name your session exactly as `reply_session` in PR Inbox's `config.toml`, so the answer comes to you:
 
     Answer to dc_...
     Option: post            (or edit, hold, merge, not-yet)
@@ -25,4 +25,4 @@ Name your session exactly as `reply_session` in Triage's `config.toml`, so the a
 
 Run `collie hill status <id>` to see which PR or issue it was. On `edit`, the words say what to change:
 rewrite `<number>.md`, and the new text is offered again. On `post`, nothing is left to do; with
-`live = false` the post is only recorded. On `hold`, wait: Triage offers the draft again after 24 h.
+`live = false` the post is only recorded. On `hold`, wait: PR Inbox offers the draft again after 24 h.

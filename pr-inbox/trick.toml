@@ -1,6 +1,6 @@
-# Triage: public replies on your own login, one Decision per draft that passes the house check.
-id = "triage"
-name = "Triage"
+# PR Inbox: public replies on your own login, one Decision per draft that passes the house check.
+id = "pr-inbox"
+name = "PR Inbox"
 run = "program.ts"
 every = "5m"
 icon = "chat"

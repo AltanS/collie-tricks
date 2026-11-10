@@ -10,24 +10,24 @@ A trick may also ask you a question, called a Decision, and your answer goes bac
 
 | Trick | What it does | Needs |
 | ----- | ------------ | ----- |
-| [`look`](look/) | Asks for your yes, by name, for each visible change a worker lists in a `LOOK.md`, with its screenshot. | `git`, a branch worktree with a `LOOK.md` and a `.look/` folder of PNG shots |
-| [`triage`](triage/) | Offers each reply draft to open pull requests and issues as a Decision, and posts it under your own login after your tap. Dry run by default. | `gh` (logged in), `git`, a folder of `<number>.md` drafts |
-| [`tag`](tag/) | Reads seven release gates and asks one Decision, "Tag and push?", when all are green. It never tags. Written for one release process: read its README first. | `gh`, `git`, the result files its README names |
-| [`lanes`](lanes/) | Shows which commit a running Collie serves, beside the head of each checkout. | `git`, optional `health_url` of a running Collie |
+| [`ui-approvals`](ui-approvals/) (UI Approvals) | Asks for your yes, by name, for each visible change a worker lists in a `LOOK.md`, with its screenshot. | `git`, a branch worktree with a `LOOK.md` and a `.look/` folder of PNG shots |
+| [`pr-inbox`](pr-inbox/) (PR Inbox) | Offers each reply draft to open pull requests and issues as a Decision, and posts it under your own login after your tap. Dry run by default. | `gh` (logged in), `git`, a folder of `<number>.md` drafts |
+| [`release-gates`](release-gates/) (Release Gates) | Reads seven release gates and asks one Decision, "Tag and push?", when all are green. It never tags. Written for one release process: read its README first. | `gh`, `git`, the result files its README names |
+| [`running-builds`](running-builds/) (Running Builds) | Shows which commit a running Collie serves, beside the head of each checkout. | `git`, optional `health_url` of a running Collie |
 
-`look`, `triage` and `tag` also have a `SKILL.md`. It is the half of the work that an agent reads with
+`ui-approvals`, `pr-inbox` and `release-gates` also have a `SKILL.md`. It is the half of the work that an agent reads with
 `collie trick skill <name>` while the trick is on.
 
 ## Install and switch on
 
 ```sh
-collie trick add look        # a name means that subfolder of this repository
-collie trick list            # shows the trick, off
-                             # now set your paths in its config.toml; see the trick's README
-collie trick on look         # the switch
+collie trick add ui-approvals   # a name means that subfolder of this repository
+collie trick list              # shows the trick, off
+                                # now set your paths in its config.toml; see the trick's README
+collie trick on ui-approvals    # the switch
 ```
 
-Replace `look` with the trick you want. A trick is off until you run `collie trick on <name>`. `collie trick off <name>`
+Replace `ui-approvals` with the trick you want. A trick is off until you run `collie trick on <name>`. `collie trick off <name>`
 switches it off again.
 
 ## Safety
@@ -36,8 +36,8 @@ switches it off again.
 - The switch approves the code as it is now. It stores a hash of the code.
 - A changed trick stops. If a file of the code changes, the trick stays off until you switch it on again.
 - A trick never sends a message or types into a session for you. It may show you a Decision, and it acts only after your tap.
-- The one write in this repository is `triage` posting a comment after your tap, and only with `live = true`. It ships with `live = false`.
-- `tag` never tags and never pushes. A yes is a record.
+- The one write in this repository is `pr-inbox` posting a comment after your tap, and only with `live = true`. It ships with `live = false`.
+- `release-gates` never tags and never pushes. A yes is a record.
 - Read the code first. A trick runs as you, with your tools and your login. Read `program.ts`, `trick.ts` and
   `config.toml` before you run `collie trick on`.
 - `collie trick check <folder>` lists what the code runs and reaches. It is a grep, not a proof.
@@ -55,7 +55,7 @@ phone. The four folders here are worked examples: each has a `test.sh` that runs
 To run the tests of this repository you need a Collie source checkout with trick support:
 
 ```sh
-COLLIE_REPO=/path/to/collie sh look/test.sh
+COLLIE_REPO=/path/to/collie sh ui-approvals/test.sh
 ```
 
 ## Share a trick

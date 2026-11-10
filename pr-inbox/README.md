@@ -1,12 +1,12 @@
-# Triage, public replies on the operator's own login
+# PR Inbox, public replies on the operator's own login
 
-Triage assumes a workflow: a triage agent writes reply drafts as files, and you decide on your phone whether each one is posted
+PR Inbox assumes a workflow: a drafting agent writes reply drafts as files, and you decide on your phone whether each one is posted
 under your own GitHub login. It is safe by default: `live = false` in `config.toml` makes a Post tap write a record and
 nothing else. Set `repo` and `drafts` to your own. The house check in `lib.ts` is one house style (first person, no
 praise words, no date promises, no em dash, one paragraph, no exclamation mark); read it and change it to suit you.
 
-Triage reads the open PRs and issues of `repo` with gh, read only, and offers each draft in `drafts` that
-passes the house check as a Decision. `SKILL.md` is the triage agent's half (`collie trick skill triage`).
+PR Inbox reads the open PRs and issues of `repo` with gh, read only, and offers each draft in `drafts` that
+passes the house check as a Decision. `SKILL.md` is the drafting agent's half (`collie trick skill pr-inbox`).
 
 - Files: `trick.toml` (`run = "program.ts"`, every 5 min, `env = ["DBUS_SESSION_BUS_ADDRESS"]` because gh
   reads its login from the keyring over the session bus), `program.ts`, `lib.ts` (the house check only),
@@ -15,9 +15,9 @@ passes the house check as a Decision. `SKILL.md` is the triage agent's half (`co
   records), `reply_session` (the session whose exact NAME gets `replyTo`), `names` (the names the check
   refuses; empty: the words of `git config --global user.name`), `show` (where the count shows; default
   `["dashboard"]`; an unknown word is a warn row).
-- On the phone: a Dashboard tile "Triage" with the number of drafts offered, and the Session: the number,
+- On the phone: a Dashboard tile "PRs" with the number of drafts offered, and the Session: the number,
   what a tap did, a red card per refused draft with its failing line, the records (would post, posted, would
-  merge), and the open PRs and issues. `status` and `belt` show `triage <n>` only while n > 0.
+  merge), and the open PRs and issues. `status` and `belt` show `prs <n>` only while n > 0.
 - Reads, cached 60 s in the state folder, a tap run always from the cache: `gh pr list`, `gh issue list`,
   `gh api -X GET user` (24 h), `gh api -X GET repos/<repo>/issues/<n>/comments` per draft. A failed read serves
   the cached copy with its age. Any other gh verb throws before it runs, except the live comment.
@@ -34,7 +34,7 @@ passes the house check as a Decision. `SKILL.md` is the triage agent's half (`co
   No gh write runs; `test.sh` checks it on every answer. With `live = true` a Post runs `gh pr comment <n>
   --body-file` (or `gh issue comment`) once per rid: a `started` record first, then `posted` with the URL, or
   `failed`. A post only goes out for the draft the Decision showed (`offered.json`). Merge never runs.
-- Edit keeps the words in `edits.jsonl` and `edit-<n>.json` in the state folder; they reach the triage agent
+- Edit keeps the words in `edits.jsonl` and `edit-<n>.json` in the state folder; they reach the drafting agent
   through `replyTo`, and the Session shows them until a new draft arrives. Hold for 24 h (both) and a dismiss close
   the key for 24 h; a dismiss writes `dismissed.jsonl`. Every record keeps `seen`.
 - No session of that name: the Session shows one muted row, "answers are recorded here only".

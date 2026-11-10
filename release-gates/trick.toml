@@ -1,6 +1,6 @@
-# Tag: the release gate. Seven gates, a row and a numbered chip each, and one Decision when all are green.
-id = "tag"
-name = "Tag"
+# Release Gates: the release gate. Seven gates, a row and a numbered chip each, and one Decision when all are green.
+id = "release-gates"
+name = "Release Gates"
 run = "program.ts"
 every = "5m"
 icon = "tag"

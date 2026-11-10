@@ -1,0 +1,8 @@
+# Running Builds: which commit a running Collie serves, beside the head of each checkout. Read only, no Decisions.
+id = "running-builds"
+name = "Running Builds"
+run = "program.ts"
+every = "5m"
+icon = "branch"
+places = ["dashboard", "status", "session"]
+contract = 1

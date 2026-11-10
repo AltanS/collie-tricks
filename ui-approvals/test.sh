@@ -1,5 +1,5 @@
 #!/bin/sh
-# Checks the Look trick on a copy of this folder, with no network and a fake git on PATH that logs every call.
+# Checks the UI Approvals trick on a copy of this folder, with no network and a fake git on PATH that logs every call.
 # Ends with "all ok". Needs sh, bun, and a Collie source checkout with trick support (COLLIE_REPO),
 # whose CLI runs `trick check` and `trick dev` from source with throwaway state and config folders.
 here=$(cd "$(dirname "$0")" && pwd)
@@ -12,16 +12,16 @@ PLACES=dashboard,tabbar,status,belt,session
 
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
-cp -r "$here" "$tmp/look"
-work=$tmp/look
+cp -r "$here" "$tmp/ui-approvals"
+work=$tmp/ui-approvals
 rm -rf "$work/media"
 sed "s#SCHEMA#$schema#" "$here/fixtures/assert.ts.in" > "$tmp/assert.ts"
 mkdir "$tmp/state" "$tmp/bin"
 root=$work/fixtures/feat-example
-lookconfig() { printf 'roots = ["%s/fixtures/*"]\nlane = "http://laptop:8788"\nreply_session = "reviewer"\n%b' "$work" "$1" > "$work/config.toml"; }
-lookconfig ''
+uaconfig() { printf 'roots = ["%s/fixtures/*"]\nlane = "http://laptop:8788"\nreply_session = "reviewer"\n%b' "$work" "$1" > "$work/config.toml"; }
+uaconfig ''
 
-# The fake git: the four read verbs Look uses; anything else is logged as WRITE and fails.
+# The fake git: the four read verbs UI Approvals uses; anything else is logged as WRITE and fails.
 cat > "$tmp/bin/git" <<EOF
 #!/bin/sh
 echo "\$*" >> "$tmp/git.log"
@@ -45,7 +45,7 @@ NOW=1794225600
 # facts TRIGGER_JSON SESSION_CWD: a facts document like the bridge writes, with one worker session. EXTRA is
 # more session objects, with a leading comma, for the name match. STATE overrides the state folder.
 facts() {
-  printf '{"contract":1,"trigger":%s,"trick":{"id":"look","dir":"%s","state":"%s"},"memberId":"laptop","host":"laptop","sessions":[{"id":"laptop:w1:1","memberId":"laptop","sessionId":"laptop:w1:1","paneId":"w1:1","host":"laptop","status":"idle","cwd":"/home/dev"},{"id":"laptop:w7:2","memberId":"laptop","sessionId":"laptop:w7:2","paneId":"w7:2","host":"laptop","name":"feature worker","agent":"claude","status":"working","cwd":"%s"}%s],"spaces":[]}' "$1" "${DIR:-$work}" "${STATE:-$tmp/state}" "$2" "${EXTRA:-}"
+  printf '{"contract":1,"trigger":%s,"trick":{"id":"ui-approvals","dir":"%s","state":"%s"},"memberId":"laptop","host":"laptop","sessions":[{"id":"laptop:w1:1","memberId":"laptop","sessionId":"laptop:w1:1","paneId":"w1:1","host":"laptop","status":"idle","cwd":"/home/dev"},{"id":"laptop:w7:2","memberId":"laptop","sessionId":"laptop:w7:2","paneId":"w7:2","host":"laptop","name":"feature worker","agent":"claude","status":"working","cwd":"%s"}%s],"spaces":[]}' "$1" "${DIR:-$work}" "${STATE:-$tmp/state}" "$2" "${EXTRA:-}"
 }
 NAMED=',{"id":"laptop:w3:9","memberId":"laptop","sessionId":"laptop:w3:9","paneId":"w3:9","host":"laptop","name":"reviewer","agent":"claude","status":"idle","cwd":"/home/dev/reviewer"}'
 DECOYS=',{"id":"laptop:w3:1","memberId":"laptop","sessionId":"laptop:w3:1","paneId":"w3:1","host":"laptop","name":"Reviewer","status":"idle","cwd":"/home/dev/a"},{"id":"laptop:w3:2","memberId":"laptop","sessionId":"laptop:w3:2","paneId":"w3:2","host":"laptop","name":"reviewer 2","status":"idle","cwd":"/home/dev/b"}'
@@ -91,7 +91,7 @@ grep -q 'This tap was recorded already.' "$tmp/devtap2.json" && [ "$(grep -c "\"
   && pass "trick dev --rid --state: the same rid twice writes one record" || miss "trick dev --rid --state"
 rm -rf "$work/media"; : > "$tmp/git.log"
 
-step "timer: five asked, one not asked" "$timer" "$root" "{\"parts\":[\"dashboard\",\"session\"],\"dashboard\":\"Look 5\",\"decisions\":[\"$K1\",\"$K2\",\"$K3\",\"$K4\",\"$K5\"],\"has\":[\"Ship “The sync badge”?\",\"Not asked\",\"no shot: status-item.png\",\"Waiting\"],\"replyTo\":{\"$K1\":\"laptop:w7:2\"},\"media\":{\"$K1\":1,\"$K5\":2},\"captions\":{\"$K1\":\"After\",\"$K5\":\"After,Before\"},\"view\":{\"$K5\":[\"Branch\",\"feat/example\",\"Session\",\"feature worker\",\"http://laptop:8788/settings/sync\"],\"$K1\":[\"Where\",\"Header, the sync badge\"]},\"links\":{\"$K1\":null,\"$K5\":null},\"recommends\":{\"$K1\":null},\"texts\":{\"$K1\":\"optional\",\"$K2\":\"optional\",\"$K3\":\"optional\",\"$K4\":\"optional\",\"$K5\":\"optional\"}}"
+step "timer: five asked, one not asked" "$timer" "$root" "{\"parts\":[\"dashboard\",\"session\"],\"dashboard\":\"Approvals 5\",\"decisions\":[\"$K1\",\"$K2\",\"$K3\",\"$K4\",\"$K5\"],\"has\":[\"Ship “The sync badge”?\",\"Not asked\",\"no shot: status-item.png\",\"Waiting\"],\"replyTo\":{\"$K1\":\"laptop:w7:2\"},\"media\":{\"$K1\":1,\"$K5\":2},\"captions\":{\"$K1\":\"After\",\"$K5\":\"After,Before\"},\"view\":{\"$K5\":[\"Branch\",\"feat/example\",\"Session\",\"feature worker\",\"http://laptop:8788/settings/sync\"],\"$K1\":[\"Where\",\"Header, the sync badge\"]},\"links\":{\"$K1\":null,\"$K5\":null},\"recommends\":{\"$K1\":null},\"texts\":{\"$K1\":\"optional\",\"$K2\":\"optional\",\"$K3\":\"optional\",\"$K4\":\"optional\",\"$K5\":\"optional\"}}"
 grep -q "doctor: not asked, feat/example: The status item: no shot" "$tmp/stderr" || miss "the refused change has no doctor line"
 ls "$work/media" | grep -q "^$K1-[0-9a-f]\{12\}\.png$" || miss "no media copy for $K1"
 # Two shots draw as before and after (media 1 is the before shot, 0 the new one); one shot gets no compare.
@@ -104,23 +104,23 @@ process.exit(ok ? 0 : 1);' && pass "two shots: a before and after compare, one s
 first=$(calls)
 [ "$first" -gt 0 ] || miss "the first run called git zero times"
 
-step "cache: a second run inside 60 s" "$timer" "$root" '{"dashboard":"Look 5"}'
+step "cache: a second run inside 60 s" "$timer" "$root" '{"dashboard":"Approvals 5"}'
 [ "$(calls)" = "$first" ] && pass "the second run called git 0 times (first run: $first)" || miss "the second run called git $(($(calls) - first)) times"
-step "cache: a run after 61 s reads again" "$timer" "$root" '{"dashboard":"Look 5"}' TRICK_NOW=$((NOW + 61))
+step "cache: a run after 61 s reads again" "$timer" "$root" '{"dashboard":"Approvals 5"}' TRICK_NOW=$((NOW + 61))
 [ "$(calls)" -gt "$first" ] || miss "a run after 61 s did not read git again"
 
 # Where the count shows is the setting `show`: dashboard (the default), tabbar, status, belt; unknown words are a warn row.
-lookconfig 'show = ["status"]\n'
-step "show status: a status chip, no tile" "$timer" "$root" '{"parts":["status","session"],"status":"look 5","dashboard":null,"belt":null}'
-lookconfig 'show = ["belt", "tabbar"]\n'
-step "show belt and tabbar: a Belt mark and a bar item" "$timer" "$root" '{"parts":["tabbar","belt","session"],"belt":"look 5","tabbar":"Look 5","status":null}'
-lookconfig 'show = []\n'
+uaconfig 'show = ["status"]\n'
+step "show status: a status chip, no tile" "$timer" "$root" '{"parts":["status","session"],"status":"approvals 5","dashboard":null,"belt":null}'
+uaconfig 'show = ["belt", "tabbar"]\n'
+step "show belt and tabbar: a Belt mark and a bar item" "$timer" "$root" '{"parts":["tabbar","belt","session"],"belt":"approvals 5","tabbar":"Approvals 5","status":null}'
+uaconfig 'show = []\n'
 step "show []: no part but the session" "$timer" "$root" '{"parts":["session"],"lacks":["which this trick ignores"]}'
-lookconfig 'show = ["dashboard", "sparkle"]\n'
+uaconfig 'show = ["dashboard", "sparkle"]\n'
 step "an unknown word is ignored with one warn row" "$timer" "$root" '{"parts":["dashboard","session"],"has":["show names \"sparkle\", which this trick ignores"]}'
-lookconfig 'mark = "belt"\n'
+uaconfig 'mark = "belt"\n'
 step "the old mark key: the default places and a warn row" "$timer" "$root" '{"parts":["dashboard","session"],"has":["mark is gone: write show = [\"dashboard\"] instead"]}'
-lookconfig ''
+uaconfig ''
 
 step "no session in the root and none named: no replyTo, one muted row" "$timer" "/home/dev/other" "{\"replyTo\":{\"$K1\":null,\"$K5\":null},\"view\":{\"$K1\":[\"none\"]},\"has\":[\"answers are recorded here only\",\"and no session is named reviewer\",\"5 of 5 have no one to tell\"]}"
 export EXTRA=$DECOYS
@@ -146,7 +146,7 @@ long=$(head -c 201 /dev/zero | tr '\0' 'x')
 } >> "$root/LOOK.md"
 S1=feat-example-suggest-yes S2=feat-example-suggest-change S3=feat-example-suggest-no S4=feat-example-suggest-maybe S5=feat-example-suggest-long S6=feat-example-suggest-upper S7=feat-example-suggest-bare
 export STATE=$tmp/state3
-step "suggest: a good field becomes recommends, the worker named from the session at the root" "$timer" "$root" "{\"dashboard\":\"Look 12\",\"recommends\":{\"$S1\":\"yes\",\"$S2\":\"change\",\"$S3\":\"no\",\"$S4\":null,\"$S5\":null,\"$S6\":null,\"$S7\":null,\"$K1\":null,\"$K2\":null,\"$K3\":null,\"$K4\":null,\"$K5\":null},\"has\":[\"From feature worker: The shot matches the sentence.\",\"From feature worker: The button sits too close to the edge.\",\"From feature worker: It hides the status row.\"],\"lacks\":[\"Look suggests\",\"From feature worker: I am not sure.\"],\"media\":{\"$S1\":1,\"$S2\":2,\"$S3\":1},\"captions\":{\"$S2\":\"After,Before\"},\"texts\":{\"$S1\":\"optional\",\"$S4\":\"optional\"},\"titleEnds\":{\"$S4\":\"Suggest maybe”?\"}}"
+step "suggest: a good field becomes recommends, the worker named from the session at the root" "$timer" "$root" "{\"dashboard\":\"Approvals 12\",\"recommends\":{\"$S1\":\"yes\",\"$S2\":\"change\",\"$S3\":\"no\",\"$S4\":null,\"$S5\":null,\"$S6\":null,\"$S7\":null,\"$K1\":null,\"$K2\":null,\"$K3\":null,\"$K4\":null,\"$K5\":null},\"has\":[\"From feature worker: The shot matches the sentence.\",\"From feature worker: The button sits too close to the edge.\",\"From feature worker: It hides the status row.\"],\"lacks\":[\"UI Approvals suggests\",\"From feature worker: I am not sure.\"],\"media\":{\"$S1\":1,\"$S2\":2,\"$S3\":1},\"captions\":{\"$S2\":\"After,Before\"},\"texts\":{\"$S1\":\"optional\",\"$S4\":\"optional\"},\"titleEnds\":{\"$S4\":\"Suggest maybe”?\"}}"
 printf '%s' "$out" | "$BUN" -e '
 const d = JSON.parse(await Bun.stdin.text());
 const rows = JSON.stringify(d.parts.find((p) => p.at === "session").view);
@@ -178,13 +178,13 @@ cp "$tmp/LOOK.md.keep" "$root/LOOK.md"
 rm -rf "$work/media"
 
 yes="{\"kind\":\"tap\",\"rid\":\"r-yes-1\",\"node\":\"hill/$K1\",\"intent\":\"yes\",\"value\":{\"text\":null},\"from\":{\"session\":\"laptop:w7:2\"},\"seen\":\"944a71314b332828\"}"
-step "tap yes" "$yes" "$root" "{\"dashboard\":\"Look 4\",\"decisions\":[\"$K2\",\"$K3\",\"$K4\",\"$K5\"],\"has\":[\"Given\",\"yes, 2026-11-09\",\"yes given for The sync badge.\"]}"
-step "the same rid again" "$yes" "$root" '{"dashboard":"Look 4","has":["This tap was recorded already."]}'
+step "tap yes" "$yes" "$root" "{\"dashboard\":\"Approvals 4\",\"decisions\":[\"$K2\",\"$K3\",\"$K4\",\"$K5\"],\"has\":[\"Given\",\"yes, 2026-11-09\",\"yes given for The sync badge.\"]}"
+step "the same rid again" "$yes" "$root" '{"dashboard":"Approvals 4","has":["This tap was recorded already."]}'
 [ "$(grep -c '"rid":"r-yes-1"' "$tmp/state/given.jsonl")" = 1 ] && pass "a repeated rid writes one record" || miss "a repeated rid wrote twice"
 
 change="{\"kind\":\"tap\",\"rid\":\"r-change-1\",\"node\":\"hill/$K3\",\"intent\":\"change\",\"value\":{\"text\":\"Put the switch first in the row.\"}}"
-step "tap change with words" "$change" "$root" "{\"dashboard\":\"Look 3\",\"decisions\":[\"$K2\",\"$K4\",\"$K5\"],\"has\":[\"change, 2026-11-09\",\"Put the switch first in the row.\"]}"
-step "timer after two answers" "$timer" "$root" "{\"dashboard\":\"Look 3\",\"decisions\":[\"$K2\",\"$K4\",\"$K5\"],\"has\":[\"Given\"]}"
+step "tap change with words" "$change" "$root" "{\"dashboard\":\"Approvals 3\",\"decisions\":[\"$K2\",\"$K4\",\"$K5\"],\"has\":[\"change, 2026-11-09\",\"Put the switch first in the row.\"]}"
+step "timer after two answers" "$timer" "$root" "{\"dashboard\":\"Approvals 3\",\"decisions\":[\"$K2\",\"$K4\",\"$K5\"],\"has\":[\"Given\"]}"
 grep -q '"answer":"change","text":"Put the switch first in the row."' "$tmp/state/given.jsonl" || miss "given.jsonl lacks the change words"
 grep '"rid":"r-yes-1"' "$tmp/state/given.jsonl" | grep -q '"seen":"944a71314b332828"' || miss "the yes record lacks seen"
 grep '"rid":"r-change-1"' "$tmp/state/given.jsonl" | grep -q '"seen":null' || miss "a tap with no seen is not recorded as null"
@@ -193,7 +193,7 @@ grep '"rid":"r-yes-1"' "$tmp/state/given.jsonl" | grep -q '"hash":"[0-9a-f]\{12\
 # A dismiss: a record with seen, the key closed for 24 h, no answer. Run on a copy of the state, then restore it.
 cp -r "$tmp/state" "$tmp/state.keep"
 dismiss="{\"kind\":\"tap\",\"rid\":\"r-dis-1\",\"node\":\"hill/$K2\",\"intent\":\"dismiss\",\"value\":{\"text\":null},\"seen\":\"aaaa111122223333\"}"
-step "tap dismiss: closed for 24 h, nothing given" "$dismiss" "$root" "{\"dashboard\":\"Look 2\",\"decisions\":[\"$K4\",\"$K5\"],\"has\":[\"Dismissed The detail screen, closed for 24 h.\",\"Dismissed: The detail screen, closed until 2026-11-10\"],\"lacks\":[\"no longer listed\"]}"
+step "tap dismiss: closed for 24 h, nothing given" "$dismiss" "$root" "{\"dashboard\":\"Approvals 2\",\"decisions\":[\"$K4\",\"$K5\"],\"has\":[\"Dismissed The detail screen, closed for 24 h.\",\"Dismissed: The detail screen, closed until 2026-11-10\"],\"lacks\":[\"no longer listed\"]}"
 step "the same dismiss rid again" "$dismiss" "$root" '{"has":["This tap was recorded already."]}'
 [ "$(grep -c '"rid":"r-dis-1"' "$tmp/state/dismissed.jsonl")" = 1 ] || miss "a repeated dismiss wrote twice"
 grep -q '"key":"'$K2'".*"seen":"aaaa111122223333"' "$tmp/state/dismissed.jsonl" || miss "the dismiss record lacks seen"
@@ -208,16 +208,16 @@ after=$(cd "$root" && find . -type f | sort | xargs md5sum)
 
 # A changed line asks again: the yes was for the old sentence.
 sed -i 's/in its own frame\./in its own frame, now wider./' "$root/LOOK.md"
-step "a changed line asks again" "$timer" "$root" "{\"dashboard\":\"Look 4\",\"decisions\":[\"$K1\",\"$K2\",\"$K4\",\"$K5\"]}"
+step "a changed line asks again" "$timer" "$root" "{\"dashboard\":\"Approvals 4\",\"decisions\":[\"$K1\",\"$K2\",\"$K4\",\"$K5\"]}"
 # A changed shot asks again: the change answer was for the old picture.
 printf 'x' >> "$root/.look/settings-sync.png"
-step "a changed shot asks again" "$timer" "$root" "{\"dashboard\":\"Look 5\",\"decisions\":[\"$K1\",\"$K2\",\"$K3\",\"$K4\",\"$K5\"]}"
+step "a changed shot asks again" "$timer" "$root" "{\"dashboard\":\"Approvals 5\",\"decisions\":[\"$K1\",\"$K2\",\"$K3\",\"$K4\",\"$K5\"]}"
 
 # Shots over the caps are not posted: warn rows with the reason.
 head -c 8 "$root/.look/badge.png" > "$root/.look/big.png" && head -c 2200000 /dev/zero >> "$root/.look/big.png"
 head -c 8 "$root/.look/badge.png" > "$root/.look/mid.png" && head -c 600000 /dev/zero >> "$root/.look/mid.png"
 printf -- '- Big shot | /big | Too big. | big.png\n- Mid shot | /mid | Over the cap. | mid.png\n' >> "$root/LOOK.md"
-step "shots over 2 MB and 512 KB are warn rows" "$timer" "$root" '{"dashboard":"Look 5","has":["Big shot (feat/example)","over 2 MB","over the 512 KB Look takes"],"lacks":["Ship “Big shot”?","Ship “Mid shot”?"]}'
+step "shots over 2 MB and 512 KB are warn rows" "$timer" "$root" '{"dashboard":"Approvals 5","has":["Big shot (feat/example)","over 2 MB","over the 512 KB UI Approvals takes"],"lacks":["Ship “Big shot”?","Ship “Mid shot”?"]}'
 
 # LOOK.md and .look/ that git would commit: a warn row.
 step "not excluded: a warn row" "$timer" "$root" '{"has":["LOOK.md and .look would be committed (feat/example)","info/exclude"]}' FAKE_IGNORED=no TRICK_NOW=$((NOW + 200))
@@ -237,7 +237,7 @@ step "a broken config.toml is a warn card" "$timer" "$root" '{"parts":["session"
 
 # A root with no LOOK.md: no badge, a plain line.
 printf 'roots = ["%s/nothing-*"]\n' "$tmp" > "$work/config.toml"
-step "no LOOK.md: a tile with no badge" "$timer" "$root" '{"parts":["dashboard","session"],"dashboard":"Look","decisions":[],"has":["No LOOK.md under the roots"]}'
+step "no LOOK.md: a tile with no badge" "$timer" "$root" '{"parts":["dashboard","session"],"dashboard":"Approvals","decisions":[],"has":["No LOOK.md under the roots"]}'
 
 if grep -q '^WRITE' "$tmp/git.log"; then miss "a write verb reached git"; else pass "git saw read verbs only ($(cut -d' ' -f3 "$tmp/git.log" | sort -u | tr '\n' ' '))"; fi
 
@@ -250,9 +250,9 @@ list() { (cd "$clean" && find . -path ./media -prune -o -type f -print | sort | 
 was=$(list)
 export DIR=$clean STATE=$tmp/state2
 step "fresh copy: timer" "$timer" "$clean/fixtures/feat-example" "{\"decisions\":[\"$K1\",\"$K2\",\"$K3\",\"$K4\",\"$K5\"]}"
-step "fresh copy: yes" "$yes" "$clean/fixtures/feat-example" '{"dashboard":"Look 4"}'
+step "fresh copy: yes" "$yes" "$clean/fixtures/feat-example" '{"dashboard":"Approvals 4"}'
 step "fresh copy: the same yes" "$yes" "$clean/fixtures/feat-example" '{"has":["This tap was recorded already."]}'
-step "fresh copy: dismiss" "$dismiss" "$clean/fixtures/feat-example" '{"dashboard":"Look 3"}'
+step "fresh copy: dismiss" "$dismiss" "$clean/fixtures/feat-example" '{"dashboard":"Approvals 3"}'
 unset DIR STATE
 [ "$was" = "$(list)" ] && pass "outside media/ the trick folder is unchanged" || miss "the program wrote into its own folder outside media/"
 [ "$(ls "$tmp/state2" | sort | tr '\n' ' ')" = "cache-git-feat-example-$(ls "$tmp/state2" | sed -n 's/^cache-git-feat-example-//p' | head -1) closed.json dismissed.jsonl given.jsonl offered.json " ] && pass "the state folder holds the cache, closed, dismissed, given and offered" || miss "state folder: $(ls "$tmp/state2" | tr '\n' ' ')"

@@ -1,4 +1,4 @@
-# The Lanes trick's settings. Not part of the code hash: edit freely.
+# The Running Builds trick's settings. Not part of the code hash: edit freely.
 # The checkouts whose head the Session lists; the first is the one the lane builds from.
 # Example: checkouts = ["~/src/collie"]
 checkouts = []

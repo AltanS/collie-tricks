@@ -1,12 +1,12 @@
-# The Triage trick's settings. Not part of the code hash: edit freely. Paths may be absolute or ~/...
+# The PR Inbox trick's settings. Not part of the code hash: edit freely. Paths may be absolute or ~/...
 # The repository, read with gh under the login on this machine. Set it to your own: owner/name.
 repo = "example/repo"
-# <n>.md drafts written by a triage agent, and <n>.verdict beside a draft for a merge.
-drafts = "~/triage/drafts"
+# <n>.md drafts written by a drafting agent, and <n>.verdict beside a draft for a merge.
+drafts = "~/pr-inbox/drafts"
 # false: a Post tap only writes a would record; no comment is ever posted. true: Post runs gh pr comment or
 # gh issue comment once per rid. Leave it false until you have read program.ts and watched the would records.
 live = false
-# The session named this in the facts gets each Decision's replyTo, so the answer and an edit's words reach the triage agent.
+# The session named this in the facts gets each Decision's replyTo, so the answer and an edit's words reach the drafting agent.
 # Empty: no replyTo, and the Session says answers are recorded here only.
 reply_session = ""
 # The names the check refuses. Empty: the words of git config --global user.name.

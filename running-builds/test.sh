@@ -1,5 +1,5 @@
 #!/bin/sh
-# Checks the Lanes trick on a copy of this folder: two throwaway git checkouts, a throwaway standby door (a small
+# Checks the Running Builds trick on a copy of this folder: two throwaway git checkouts, a throwaway standby door (a small
 # Bun server on a free loopback port), the program run as the bridge runs it, `collie trick check` and
 # `collie trick dev` from a Collie source checkout (COLLIE_REPO, with trick support). It touches no real checkout and no
 # real lane, and writes nothing in the trick folder. Ends with "all ok". Writes go to /dev/null or through tee only.
@@ -14,8 +14,8 @@ failed=0
 pass() { echo "ok   $1"; }
 miss() { echo "FAIL $1"; failed=1; }
 
-cp -r "$here" "$tmp/lanes"
-work=$tmp/lanes
+cp -r "$here" "$tmp/running-builds"
+work=$tmp/running-builds
 for c in one two; do
   git init -q "$tmp/$c" && git -C "$tmp/$c" -c user.name=t -c user.email=t@example.invalid commit -q --allow-empty -m "the $c fixture commit"
 done
@@ -40,7 +40,7 @@ closed=http://127.0.0.1:9/standby/health
 # config CHECKOUTS HEALTH SHOW
 config() { printf 'checkouts = [%s]\nhealth_url = "%s"\nlabel = "Lane"\nshow = [%s]\n' "$1" "$2" "$3" | tee "$work/config.toml" >/dev/null; }
 all="\"$tmp/one\", \"$tmp/two\", \"$tmp/none\""
-facts='{"contract":1,"trigger":{"kind":"timer"},"trick":{"id":"lanes","dir":"'$work'","state":"'$tmp/state'"},"memberId":"laptop","host":"laptop","sessions":[],"spaces":[]}'
+facts='{"contract":1,"trigger":{"kind":"timer"},"trick":{"id":"running-builds","dir":"'$work'","state":"'$tmp/state'"},"memberId":"laptop","host":"laptop","sessions":[],"spaces":[]}'
 was=$(cd "$work" && find . -type f ! -name config.toml | sort | xargs md5sum)
 runit() { printf '%s' "$facts" | (cd "$work" && "$BUN" ./program.ts) 2>/dev/null; }
 
