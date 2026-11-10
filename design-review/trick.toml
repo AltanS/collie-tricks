@@ -1,6 +1,6 @@
-# UI Approvals: the yes by name for UI changes. One Decision per visible change in a worktree's LOOK.md, with its shot.
-id = "ui-approvals"
-name = "UI Approvals"
+# Design Review: the yes by name for UI changes. One Decision per visible change in a worktree's LOOK.md, with its shot.
+id = "design-review"
+name = "Design Review"
 run = "program.ts"
 every = "5m"
 icon = "eye"

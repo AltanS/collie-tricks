@@ -12,24 +12,24 @@ A trick may also ask you a question, called a Decision, and your answer goes bac
 
 | Trick | What it does | Needs |
 | ----- | ------------ | ----- |
-| [`ui-approvals`](ui-approvals/) (UI Approvals) | Asks for your yes, by name, for each visible change a worker lists in a `LOOK.md`, with its screenshot. | `git`, a branch worktree with a `LOOK.md` and a `.look/` folder of PNG shots |
+| [`design-review`](design-review/) (Design Review) | Asks for your yes, by name, for each visible change a worker lists in a `LOOK.md`, with its screenshot. | `git`, a branch worktree with a `LOOK.md` and a `.look/` folder of PNG shots |
 | [`pr-inbox`](pr-inbox/) (PR Inbox) | Offers each reply draft to open pull requests and issues as a Decision, and posts it under your own login after your tap. Dry run by default. | `gh` (logged in), `git`, a folder of `<number>.md` drafts |
 | [`release-gates`](release-gates/) (Release Gates) | Reads seven release gates and asks one Decision, "Tag and push?", when all are green. It never tags. Written for one release process: read its README first. | `gh`, `git`, the result files its README names |
 | [`running-builds`](running-builds/) (Running Builds) | Shows which commit a running Collie serves, beside the head of each checkout. | `git`, optional `health_url` of a running Collie |
 
-`ui-approvals`, `pr-inbox` and `release-gates` also have a `SKILL.md`. It is the half of the work that an agent reads with
+`design-review`, `pr-inbox` and `release-gates` also have a `SKILL.md`. It is the half of the work that an agent reads with
 `collie trick skill <name>` while the trick is on.
 
 ## Install and switch on
 
 ```sh
-collie trick add ui-approvals   # a name means that subfolder of this repository
+collie trick add design-review   # a name means that subfolder of this repository
 collie trick list              # shows the trick, off
                                 # now set your paths in its config.toml; see the trick's README
-collie trick on ui-approvals    # the switch
+collie trick on design-review    # the switch
 ```
 
-Replace `ui-approvals` with the trick you want. A trick is off until you run `collie trick on <name>`. `collie trick off <name>`
+Replace `design-review` with the trick you want. A trick is off until you run `collie trick on <name>`. `collie trick off <name>`
 switches it off again.
 
 ## Safety
@@ -57,7 +57,7 @@ phone. The four folders here are worked examples: each has a `test.sh` that runs
 To run the tests of this repository you need a Collie source checkout with trick support:
 
 ```sh
-COLLIE_REPO=/path/to/collie sh ui-approvals/test.sh
+COLLIE_REPO=/path/to/collie sh design-review/test.sh
 ```
 
 ## Share a trick

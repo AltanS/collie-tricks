@@ -1,5 +1,5 @@
-// The UI Approvals trick: the yes by name for UI changes. A worker keeps LOOK.md and .look/ (the shots) at the root
-// of its worktree, out of git. UI Approvals finds each root under `roots` in config.toml, asks one Decision per line
+// The Design Review trick: the yes by name for UI changes. A worker keeps LOOK.md and .look/ (the shots) at the root
+// of its worktree, out of git. Design Review finds each root under `roots` in config.toml, asks one Decision per line
 // with its shots, and keeps each answer as a dated line in given.jsonl in its state folder (the audit).
 // LOOK.md, one line per visible change:  - <name> | <route or screen> | <one sentence> | <shot> [| <before shot>] [| suggest <yes|no|change>: <why>]
 // The trick has no opinion of its own. A worker may add the optional last field `suggest <answer>: <why>`
@@ -70,7 +70,7 @@ function shotProblem(file: string): string | null {
   if (!/\.(png|jpe?g)$/i.test(file)) return "the shot is not a PNG";
   const size = statSync(file).size;
   if (size > SHOT_HARD_MAX) return "the shot is " + (size / 1048576).toFixed(1) + " MB, over 2 MB";
-  if (size > SHOT_MAX) return "the shot is " + Math.round(size / 1024) + " KB, over the 512 KB UI Approvals takes";
+  if (size > SHOT_MAX) return "the shot is " + Math.round(size / 1024) + " KB, over the 512 KB Design Review takes";
   const head = readFileSync(file).subarray(0, 8).toString("hex");
   return head.startsWith("89504e470d0a1a0a") || head.startsWith("ffd8ff") ? null : "the shot is not a PNG or JPEG";
 }
@@ -129,8 +129,8 @@ run(async (t) => {
   // Every string the phone gets is masked (keys, the home folder) and carries no em dash.
   t.onPrint((doc) => mapText(doc, (s) => noDash(mask(s))));
   const now = clock();
-  // SAFETY: an optional [ui-approvals] table holds the same keys as the top level.
-  const cfg = (typeof t.config["ui-approvals"] === "object" ? t.config["ui-approvals"] : t.config) as Trick["config"];
+  // SAFETY: an optional [design-review] table holds the same keys as the top level.
+  const cfg = (typeof t.config["design-review"] === "object" ? t.config["design-review"] : t.config) as Trick["config"];
   const lane = str(cfg.lane, "").replace(/\/+$/, "");
   const replySession = str(cfg.reply_session, "");
   const show = t.show(["dashboard"], cfg);
@@ -222,7 +222,7 @@ run(async (t) => {
   }
 
   // ── The places and the Session ──
-  t.put(show, { label: "Approvals", icon: "eye", badge: n, word: n > 0 ? "approvals " + n : null, tone: "accent" });
+  t.put(show, { label: "Design", icon: "eye", badge: n, word: n > 0 ? "design " + n : null, tone: "accent" });
   const view: Node[] = [v.number(n, { label: "waiting for your yes", tone: n > 0 ? "accent" : "ok" }), ...notes.map((note) => v.line(clip(note, 240), { role: "status" }))];
   if (n > 0) {
     const rows = [...waiting].sort((a, b) => a.branch.localeCompare(b.branch)).slice(0, 23).map((c) => v.row(clip(c.name, 120), { end: age(now - c.at), icon: "eye" }, [v.para(clip(c.branch, 120))]));
@@ -238,7 +238,7 @@ run(async (t) => {
   const badSuggest = waiting.filter((c) => c.suggestBad);
   for (const c of badSuggest) doctor("suggest field not understood, " + c.branch + ": " + c.name);
   if (badSuggest.length > 0) {
-    const rows = badSuggest.slice(0, 23).map((c) => v.row(clip("suggest field not understood (" + c.name + ")", 120), { tone: "warn", icon: "warn" }, [v.para(clip("Write | suggest yes: <why>, no or change, with a reason of 1 to 200 characters. UI Approvals ignores the field and asks the change as it is.", 400))]));
+    const rows = badSuggest.slice(0, 23).map((c) => v.row(clip("suggest field not understood (" + c.name + ")", 120), { tone: "warn", icon: "warn" }, [v.para(clip("Write | suggest yes: <why>, no or change, with a reason of 1 to 200 characters. Design Review ignores the field and asks the change as it is.", 400))]));
     view.push(v.group(badSuggest.length > 23 ? [...rows, v.para("and " + (badSuggest.length - 23) + " more")] : rows, { label: "Suggest field", badge: badSuggest.length }));
   }
   const warn = [...changes.filter((c) => c.problem !== null).map((c) => ({ text: (c.name || "a line") + " (" + c.branch + ")", detail: c.problem ?? "" })), ...warnRows];
