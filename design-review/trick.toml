@@ -1,6 +1,8 @@
 # Design Review: the yes by name for UI changes. One Decision per visible change in a worktree's LOOK.md, with its shot.
 id = "design-review"
 name = "Design Review"
+description = "Turns an agent's UI notes into Decisions you approve by name."
+about = "Design Review reads the notes file an agent writes about its UI changes, with the shots. It turns each change into a Decision on the Hill. You approve or refuse each change by name."
 run = "program.ts"
 every = "5m"
 icon = "eye"

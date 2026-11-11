@@ -1,6 +1,8 @@
 # Running Builds: which commit a running Collie serves, beside the head of each checkout. Read only, no Decisions.
 id = "running-builds"
 name = "Running Builds"
+description = "Builds and long commands running in your sessions now."
+about = "Running Builds shows the builds and long commands that run in your sessions now. Use it to see what still runs before you stop a session. It lists them and starts nothing."
 run = "program.ts"
 every = "5m"
 icon = "branch"

@@ -1,6 +1,8 @@
 # Release Gates: the release gate. Seven gates, a row and a numbered chip each, and one Decision when all are green.
 id = "release-gates"
 name = "Release Gates"
+description = "Which release checks are green for this release branch."
+about = "Release Gates shows which checks are green for the current release branch. Each check has its own line. Use it to see if the branch is ready before you tag."
 run = "program.ts"
 every = "5m"
 icon = "tag"

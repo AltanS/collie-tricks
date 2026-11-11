@@ -1,6 +1,8 @@
 # PR Inbox: public replies on your own login, one Decision per draft that passes the house check.
 id = "pr-inbox"
 name = "PR Inbox"
+description = "Open pull requests and issues that wait for you."
+about = "PR Inbox lists the open pull requests and issues that wait for the owner. It shows what needs an answer now. It only shows them, and it changes nothing."
 run = "program.ts"
 every = "5m"
 icon = "chat"
