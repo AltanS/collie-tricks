@@ -16,7 +16,7 @@ never tags: a yes is a dated record with the rid in `tag-yes.jsonl`. The release
 through the Decision's `replyTo` and does the tag. `SKILL.md` is its half (`collie trick skill release-gates`).
 
 - Files: `trick.toml` (`run = "program.ts"`, every 5 min, `env = ["DBUS_SESSION_BUS_ADDRESS"]` for gh's
-  keyring login), `program.ts`, `trick.ts` (Collie's helper v3, unmodified: the records, the cache,
+  keyring login), `program.ts`, `trick.ts` (Collie's helper v4, unmodified: the records, the cache,
   the mask, the `show` setting), `config.toml`, `test.sh`, `fixtures/`.
 - `config.toml`: `repo`, `version` (empty: one muted row "no release open", no count, no Decision), `branch`,
   `workflow`, `minor`, `checkout`, `leg_results`, `leg_logs`, `rehearsal`, `hold`, `counsel`, `release_session`, `show`

@@ -10,7 +10,7 @@ passes the house check as a Decision. `SKILL.md` is the drafting agent's half (`
 
 - Files: `trick.toml` (`run = "program.ts"`, every 5 min, `env = ["DBUS_SESSION_BUS_ADDRESS"]` because gh
   reads its login from the keyring over the session bus), `program.ts`, `lib.ts` (the house check only),
-  `trick.ts` (Collie's helper v3, unmodified: the records, the cache, the mask, the `show` setting), `config.toml`, `test.sh`, `fixtures/`.
+  `trick.ts` (Collie's helper v4, unmodified: the records, the cache, the mask, the `show` setting), `config.toml`, `test.sh`, `fixtures/`.
 - `config.toml`: `repo`, `drafts` (a folder of `<n>.md` and `<n>.verdict`), `live` (false: a Post tap only
   records), `reply_session` (the session whose exact NAME gets `replyTo`), `names` (the names the check
   refuses; empty: the words of `git config --global user.name`), `show` (where the count shows; default

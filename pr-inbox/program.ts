@@ -7,7 +7,7 @@
 // always writes a record. Edit keeps the person's words in the state folder (they reach the drafting agent
 // through replyTo); Hold, Not yet and a dismiss close the key for 24 h.
 // Asked again: a post or a would-merge ends the key for that draft; a new draft text is new content.
-// The records, the cache, the tool lookup and `show` are Collie's helper, trick.ts (v3); lib.ts is the house check.
+// The records, the cache, the tool lookup and `show` are Collie's helper, trick.ts (v4); lib.ts is the house check.
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 

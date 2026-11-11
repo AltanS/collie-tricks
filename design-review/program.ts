@@ -8,7 +8,7 @@
 //
 // Asked again: an answer drops the key; a changed line or shot gives it a new hash, so the list holds it
 // again. A dismiss closes the key for 24 h. git runs read only (branch, check-ignore, status), cached 60 s.
-// Everything else is Collie's helper, trick.ts (v3): the records, the cache, the tool lookup, `show`.
+// Everything else is Collie's helper, trick.ts (v4): the records, the cache, the tool lookup, `show`.
 import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync } from "node:fs";
 import { basename, extname, join } from "node:path";
 

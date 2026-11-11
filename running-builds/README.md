@@ -1,6 +1,6 @@
 # Running Builds, which commit a running Collie serves
 
-The smallest useful trick: `program.ts` (about 40 lines) and Collie's helper `trick.ts` (v3), unmodified. It shows which
+The smallest useful trick: `program.ts` (about 40 lines) and Collie's helper `trick.ts` (v4), unmodified. It shows which
 commit a running Collie (a "lane") serves, beside the head of each checkout in `config.toml`. A lane is one running
 Collie built from one checkout, such as a dev copy next to a release copy. It does nothing until you set `checkouts`
 or `health_url`.
@@ -17,6 +17,6 @@ or `health_url`.
   `show = ["dashboard", "status"]` adds a status chip with the sha; any other word is ignored with one warn row (`t.show`).
 - No Decisions: every run prints `"decisions": []`. No state, no files written. Every 5 minutes.
 - `collie trick check` warns about the one HTTP read (network) and the two git reads (spawn), both true. It
-  lists `trick.ts` as helper v3 and does not grep it, nor `test.sh` and this README.
+  lists `trick.ts` as helper v4 and does not grep it, nor `test.sh` and this README.
 - Check: `COLLIE_REPO=/path/to/collie sh test.sh` ("all ok"). A Collie source checkout with trick support is needed. The test
   starts its own throwaway door on a free loopback port, so it never reads a real lane.

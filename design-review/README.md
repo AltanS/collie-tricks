@@ -7,7 +7,7 @@ in `config.toml`.
 Design Review asks one Decision per visible change that a worker lists in `LOOK.md`, with its shot. `SKILL.md` is the
 worker's half (`collie trick skill design-review` prints it while the trick is on). The notes file a worker writes is still called `LOOK.md`, and its shots folder `.look/`. Agents already write these two names, so they stay.
 
-- Files: `trick.toml` (`run = "program.ts"`, every 5 min), `program.ts`, `trick.ts` (Collie's helper v3,
+- Files: `trick.toml` (`run = "program.ts"`, every 5 min), `program.ts`, `trick.ts` (Collie's helper v4,
   unmodified: the records, the cache, the mask, the `show` setting), `config.toml`, `test.sh`, `fixtures/`.
 - `config.toml`: `roots` (globs, `~/...` allowed; every match with a `LOOK.md` is a branch root), `lane` (the
   link base for a route that is a path; empty: no link), `reply_session` (see below; empty: none), `show` (where the count shows: any of

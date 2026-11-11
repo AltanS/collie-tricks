@@ -10,7 +10,7 @@
 //   7 Counsel done       the counsel note names the version and is newer than the newest tag
 // A gate that cannot be read is idle, "no report", never red and never green. TRICK_FIXTURE=all-green forces
 // every gate green, for the tests only. Asked again: a yes ends the key for that version; not-yet and a
-// dismiss close it for 24 h. The records, the cache, the tool lookup and `show` are Collie's helper, trick.ts (v3).
+// dismiss close it for 24 h. The records, the cache, the tool lookup and `show` are Collie's helper, trick.ts (v4).
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { basename, join } from "node:path";
 
