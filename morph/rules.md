@@ -31,8 +31,8 @@ Buttons and choices:
 - When the request is unclear, draw the question with two to four options, not a guess.
   Say in one line what each option does. Mark the one you recommend, and say why.
 - For a question about how something looks, give every option a preview picture.
-- After a pick, draw the next step. When the old question stays on the screen,
-  show the pick as settled, so the operator sees what they chose.
+- After a pick, draw the next step. Keep the question's block when you draw it.
+  Collie marks the pick, so the operator sees what they chose.
 
 While you work:
 - Do not wait for the whole answer. Show the heading and a pending block for each part
