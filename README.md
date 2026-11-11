@@ -1,10 +1,10 @@
 # collie-tricks
 
-Four tricks for [Collie](https://github.com/AltanS/collie).
+Five tricks for [Collie](https://github.com/AltanS/collie).
 
 Tricks need a Collie build that has the `collie trick` command. Run `collie trick` to check.
 
-A trick is a small program on your machine. Collie runs it every few minutes and reads one JSON document from its output.
+Most tricks are a small program on your machine. Collie runs it every few minutes and reads one JSON document from its output.
 The document says what to show on your phone, and Collie draws it with its own parts, so a trick never ships its own screen.
 A trick may also ask you a question, called a Decision, and your answer goes back to the trick.
 
@@ -16,9 +16,20 @@ A trick may also ask you a question, called a Decision, and your answer goes bac
 | [`pr-inbox`](pr-inbox/) (PR Inbox) | Offers each reply draft to open pull requests and issues as a Decision, and posts it under your own login after your tap. Dry run by default. | `gh` (logged in), `git`, a folder of `<number>.md` drafts |
 | [`release-gates`](release-gates/) (Release Gates) | Reads seven release gates and asks one Decision, "Tag and push?", when all are green. It never tags. Written for one release process: read its README first. | `gh`, `git`, the result files its README names |
 | [`running-builds`](running-builds/) (Running Builds) | Shows which commit a running Collie serves, beside the head of each checkout. | `git`, optional `health_url` of a running Collie |
+| [`morph`](morph/) (Morph) | Your agent answers with one screen you can tap, not a wall of text. You switch it on per session. | a Collie with agent views, sessions on the lead machine |
 
 `design-review`, `pr-inbox` and `release-gates` also have a `SKILL.md`. It is the half of the work that an agent reads with
 `collie trick skill <name>` while the trick is on.
+
+## Two kinds of trick
+
+A program trick runs a program on your machine every few minutes. The program prints what to show, and Collie draws
+it as tiles, chips, cards and Decisions. `design-review`, `pr-inbox`, `release-gates` and `running-builds` are program
+tricks.
+
+A view trick has no program. It adds a view of a session, and the session's own agent draws that view when you write to
+it from there. Its rules file holds the instructions the agent gets: read it before you switch the trick on, as you
+would read a program. `morph` is a view trick.
 
 ## Install and switch on
 
@@ -52,7 +63,7 @@ collie trick init my-trick
 
 This makes a folder with `trick.toml`, `program.ts`, the helper `trick.ts`, `config.toml` and `AGENTS.md`. Edit
 `program.ts`. Run it with `collie trick dev <folder>`, which prints what the phone would draw and writes nothing to the
-phone. The four folders here are worked examples: each has a `test.sh` that runs the program against fake `gh` and `git`.
+phone. The four program folders here are worked examples: each has a `test.sh` that runs the program against fake `gh` and `git`.
 
 To run the tests of this repository you need a Collie source checkout with trick support:
 

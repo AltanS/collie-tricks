@@ -1,0 +1,10 @@
+# Morph: the session's own agent answers you with one screen you can tap.
+# It has no program, so it has no run line. rules.md holds the instructions the agent reads.
+id = "morph"
+name = "Morph"
+contract = 2
+icon = "eye"
+places = ["agent-view"]
+rules = "rules.md"
+description = "Your agent answers with one screen you can tap, not a wall of text."
+about = "Morph is a view of a session, beside Terminal and Chat. In it, the session's own agent answers you with one screen you can tap, not a wall of text. You switch it on per session.\n\nThe agent draws the screen with the app's own parts: text, lists, tables, diffs, pictures and buttons. A tap on a button sends the button's visible words to that session, in your name, and nothing else.\n\nMorph gives your agents the instructions in rules.md. You can read them in full under Read the instructions, before you switch it on. It works for sessions on the lead machine."
