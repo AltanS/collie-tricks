@@ -11,3 +11,5 @@ places = ["dashboard", "tabbar", "status", "belt", "session"]
 # gh reads its login from the system keyring, which it reaches over the session bus.
 env = ["DBUS_SESSION_BUS_ADDRESS"]
 contract = 1
+# Its Decisions name replyTo: your answer goes to that session as your own message, so Collie asks for this.
+decides = "reply"

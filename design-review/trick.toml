@@ -9,3 +9,5 @@ icon = "eye"
 # Every place `show` in config.toml may name, and the session. Which ones draw is config.toml's call.
 places = ["dashboard", "tabbar", "status", "belt", "session"]
 contract = 1
+# Its Decisions name replyTo: your answer goes to that session as your own message, so Collie asks for this.
+decides = "reply"
