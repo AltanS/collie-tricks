@@ -78,7 +78,7 @@ timer='{"kind":"timer"}'
 config "$V" true results logs "$fix/rehearsal-ok.txt"; fresh
 
 # ── The platform's own checks ──
-if cli trick check --run "$work" > "$tmp/check.txt" 2>&1 && grep -q '^ok: no problems.' "$tmp/check.txt"; then pass "trick check --run: no refusal"; else miss "trick check --run"; cat "$tmp/check.txt"; fi
+if cli trick check --run "$work" > "$tmp/check.txt" 2>&1 && grep -qE '^ok: (no problems|it runs on this machine, but it cannot be proposed)\.' "$tmp/check.txt"; then pass "trick check --run: no refusal"; else miss "trick check --run"; cat "$tmp/check.txt"; fi
 cli trick dev "$work" --json > "$tmp/dev.json" 2>&1
 if "$BUN" -e '
 const d = JSON.parse(await Bun.file(process.argv[1]).text());

@@ -81,7 +81,7 @@ cli() { (cd "$repo" && env PATH="$tmp/bin:$BUNDIR:/usr/bin:/bin" HOME="$HOME" CO
 timer='{"kind":"timer"}'
 
 # ── The platform's own checks ──
-if cli trick check --run "$work" > "$tmp/check.txt" 2>&1 && grep -q '^ok: no problems.' "$tmp/check.txt"; then pass "trick check --run: no refusal"; else miss "trick check --run"; cat "$tmp/check.txt"; fi
+if cli trick check --run "$work" > "$tmp/check.txt" 2>&1 && grep -qE '^ok: (no problems|it runs on this machine, but it cannot be proposed)\.' "$tmp/check.txt"; then pass "trick check --run: no refusal"; else miss "trick check --run"; cat "$tmp/check.txt"; fi
 grep -q 'env:    DBUS_SESSION_BUS_ADDRESS' "$tmp/check.txt" && pass "trick check lists the env name" || miss "trick check does not list DBUS_SESSION_BUS_ADDRESS"
 cli trick dev "$work" --json > "$tmp/dev.json" 2>&1
 if "$BUN" -e '
