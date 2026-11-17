@@ -96,9 +96,9 @@ config "\"$tmp/one\"" "$same" '"dashboard"'
 cli() { (cd "$repo" && env PATH="$PATH" HOME="$HOME" COLLIE_STATE_DIR="$tmp/cli-state" HERDR_PLUGIN_CONFIG_DIR="$tmp/cli-config" "$BUN" cli/main.ts "$@" 2>&1); }
 check=$(cli trick check --run "$work")
 printf '%s\n' "$check" | grep -q '^ok: no problems.' && pass "trick check --run: no refusal" || { miss "trick check --run"; printf '%s\n' "$check"; }
-kinds=$(printf '%s\n' "$check" | sed -n 's/^  warn: \([a-z.]*\):[0-9]* \([a-z]*\).*/\1 \2/p' | sort -u | tr '\n' ',')
+kinds=$(printf '%s\n' "$check" | sed -n 's/^  warning: \([a-z.]*\):[0-9]* \([a-z]*\).*/\1 \2/p' | sort -u | tr '\n' ',')
 [ "$kinds" = "program.ts reaches,program.ts starts," ] && pass "the only warnings: the fetch and the git reads (test.sh and the shipped helper are not grepped)" || miss "warnings: $kinds"
-printf '%s\n' "$check" | grep -q '^  helper: trick.ts is collie trick helper v4' && pass "trick check names the shipped helper v4" || miss "trick check: no helper line"
+printf '%s\n' "$check" | grep -qxF '  helper: trick.ts is collie trick helper v7, Collie'"'"'s own code, not checked line by line' && pass "trick check names the shipped helper v7" || miss "trick check: no helper line"
 dev=$(cli trick dev "$work" --json)
 printf '%s' "$dev" | "$BUN" -e 'const d = JSON.parse(await Bun.stdin.text()); process.exit(d.outcome === "exited" && d.refusals.length === 0 && d.decisionsListed && d.decisions.length === 0 && d.parts.map((p) => p.place).join() === "dashboard,session" ? 0 : 1)' && pass "trick dev --json: the tile and the Session, no Decisions" || miss "trick dev --json"
 
